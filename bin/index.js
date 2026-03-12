@@ -4,6 +4,8 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { initCommand } from '../src/commands/init.js';
 import { generateCommand } from '../src/commands/generate.js';
+import { listCommand } from '../src/commands/list.js';
+
 
 const program = new Command();
 
@@ -18,6 +20,14 @@ program
   .description('Initialize a new Express project structure')
   .action(initCommand);
 
+// Registering the list command
+program
+  .command('list')
+  .alias('ls')
+  .description('List all generated resources and their active files')
+  .action(() => {
+    listCommand();
+  });
 // Registering the generate command
 const generateTypes = ['controller', 'route', 'service', 'model', 'resource'];
 
