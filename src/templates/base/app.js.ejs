@@ -1,0 +1,23 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const app = express();
+
+// Global Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Base Route to verify it works
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Welcome to <%- projectName %> API!',
+    architecture: '<%- architecture %>',
+    database: '<%- database %>'
+  });
+});
+
+export default app;

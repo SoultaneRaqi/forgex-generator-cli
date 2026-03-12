@@ -55,6 +55,12 @@ export async function createProjectStructure(config) {
     const envContent = await ejs.renderFile(path.join(templateDir, '.env.ejs'), config);
     await fs.writeFile(path.join(projectPath, '.env'), envContent);
 
+    const appContent = await ejs.renderFile(path.join(templateDir, 'app.js.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'src', 'app.js'), appContent);
+
+    const serverContent = await ejs.renderFile(path.join(templateDir, 'server.js.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'src', 'server.js'), serverContent);
+    
     const gitignoreContent = "node_modules\n.env\n.DS_Store\ncoverage\n";
     await fs.writeFile(path.join(projectPath, '.gitignore'), gitignoreContent);
 
