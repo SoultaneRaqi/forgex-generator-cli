@@ -15,13 +15,13 @@ export const initCommand = async () => {
       choices: [
         {
           name: 'Standard (Layered)',
-          value: 'Standard',
+          value: 'standard',
           description: 'Best for small/medium apps (Controller -> Service -> Repository)'
         },
         {
           name: 'Advanced (Modular)',
-          value: 'Advanced',
-          description: 'Best for large apps (Groups files by feature/domain like Users, Products)'
+          value: 'advanced',
+          description: 'Best for large apps (Groups files by feature/domain)'
         }
       ]
     });
@@ -35,15 +35,56 @@ export const initCommand = async () => {
       ]
     });
 
-    console.log('\n' + chalk.green('✔ Configuration saved:'));
-    console.log(chalk.cyan(`Project: ${projectName}`));
-    console.log(chalk.cyan(`Architecture: ${architecture}`));
-    console.log(chalk.cyan(`Manager: ${packageManager}\n`));
+    // Epic 1: Database selection
+    const database = await select({
+      message: 'Which database will you use?',
+      choices: [
+        { name: 'PostgreSQL', value: 'postgres' },
+        { name: 'MySQL', value: 'mysql' },
+        { name: 'MongoDB', value: 'mongodb' },
+        { name: 'None (Simple API)', value: 'none' }
+      ]
+    });
+
+    // Epic 1: Conditional ORM selection
+    let orm = 'none';
+    if (database !== 'none') {
+      orm = await select({
+        message: 'Which ORM/ODM do you want to use?',
+        choices: [
+          { 
+            name: 'Prisma (Highly Recommended)', 
+            value: 'prisma',
+            description: 'Modern ORM that works with SQL and MongoDB'
+          },
+          { 
+            name: 'Mongoose', 
+            value: 'mongoose', 
+            disabled: database !== 'mongodb' ? '(Requires MongoDB)' : false 
+          },
+          { 
+            name: 'None (Raw drivers)', 
+            value: 'none' 
+          }
+        ]
+      });
+    }
+
+    // Creating the data object that will eventually be saved to forgex.json
+    const configDetails = {
+      projectName,
+      architecture,
+      packageManager,
+      database,
+      orm
+    };
+
+    console.log('\n' + chalk.green('✔ Configuration saved for forgex.json:'));
+    console.table(configDetails); // Using console.table for a clean, professional look!
     
-    console.log(chalk.yellow(`Next step: Generating the ${architecture} folder structure...`));
+    console.log('\n' + chalk.yellow(`Next phase: Building the filesystem engine...`));
 
   } catch (error) {
-    // This catches if the user presses Ctrl+C to exit the prompt
     if (error.name === 'ExitPromptError') {
       console.log(chalk.red('\nProcess cancelled by user.'));
     } else {
