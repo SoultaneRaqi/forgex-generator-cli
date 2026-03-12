@@ -30,13 +30,19 @@ export const listCommand = async () => {
         // Format the resource name (e.g., 'products' -> 'Product')
         const formattedName = mod.name.charAt(0).toUpperCase() + mod.name.slice(1, -1);
 
+        const hasController = files.some(f => f.includes('.controller.js'));
+        const hasRoute = files.some(f => f.includes('.route.js'));
+        const hasService = files.some(f => f.includes('.service.js'));
+        const hasModel = files.some(f => f.includes('.model.js'));
+
         resources.push({
           Resource: formattedName,
-          Controller: files.some(f => f.includes('.controller.js')) ? '✔' : '✖',
-          Route: files.some(f => f.includes('.route.js')) ? '✔' : '✖',
-          Service: files.some(f => f.includes('.service.js')) ? '✔' : '✖',
-          Model: files.some(f => f.includes('.model.js')) ? '✔' : '✖',
-          Endpoint: `/api/v1/${mod.name}`
+          Controller: hasController ? '✔' : '✖',
+          Route: hasRoute ? '✔' : '✖',
+          Service: hasService ? '✔' : '✖',
+          Model: hasModel ? '✔' : '✖',
+          // Smarter Endpoint logic here:
+          Endpoint: hasRoute ? `/api/v1/${mod.name}` : 'Internal (No Route)'
         });
       }
     }
