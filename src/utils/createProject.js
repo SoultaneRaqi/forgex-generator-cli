@@ -91,7 +91,17 @@ export async function createProjectStructure(config) {
       spinner.warn(chalk.yellow(`Files created, but failed to install dependencies automatically. Please run '${packageManager} install' manually.`));
     }
 
-    // j Start Server Logic
+    spinner.text = chalk.cyan('Initializing Git repository...');
+    try {
+      // Initialize git, add all generated files, and create the first commit
+      await execAsync('git init && git add . && git commit -m "chore: initial commit by ForgeX 🪓"', { cwd: projectPath });
+      spinner.succeed(chalk.green('Git repository initialized successfully!'));
+    } catch (gitError) {
+      // If they don't have git installed or configured, we just warn them safely
+      spinner.warn(chalk.yellow('Skipped Git initialization (Git might not be installed or configured).'));
+    }
+
+    // j   Start Server Logic
     if (config.startServer) {
       console.log('\n' + chalk.bgGreen.black(' FORGEX COMPLETE '));
       console.log(chalk.cyan(`\n🚀 Starting development server in ./${projectName}...\n`));
