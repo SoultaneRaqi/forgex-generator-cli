@@ -15,9 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Welcome to <%- projectName %> API!',
-    architecture: '<%- architecture %>',
     database: '<%- database %>'
-  });
+  }); 
 });
 
 export default app;

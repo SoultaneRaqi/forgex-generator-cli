@@ -8,23 +8,7 @@ export const initCommand = async () => {
   try {
     const projectName = await input({
       message: 'What is the name of your project?',
-      default: 'my-express-app',
-    });
-
-    const architecture = await select({
-      message: 'Which architecture do you want to use?',
-      choices: [
-        {
-          name: 'Standard (Layered)',
-          value: 'standard',
-          description: 'Best for small/medium apps (Controller -> Service -> Repository)'
-        },
-        {
-          name: 'Advanced (Modular)',
-          value: 'advanced',
-          description: 'Best for large apps (Groups files by feature/domain)'
-        }
-      ]
+      default: 'my-express-api',
     });
 
     const packageManager = await select({
@@ -36,7 +20,6 @@ export const initCommand = async () => {
       ]
     });
 
-    // Epic 1: Database selection
     const database = await select({
       message: 'Which database will you use?',
       choices: [
@@ -47,41 +30,28 @@ export const initCommand = async () => {
       ]
     });
 
-    // Epic 1: Conditional ORM selection
     let orm = 'none';
     if (database !== 'none') {
       orm = await select({
         message: 'Which ORM/ODM do you want to use?',
         choices: [
-          { 
-            name: 'Prisma (Highly Recommended)', 
-            value: 'prisma',
-            description: 'Modern ORM that works with SQL and MongoDB'
-          },
-          { 
-            name: 'Mongoose', 
-            value: 'mongoose', 
-            disabled: database !== 'mongodb' ? '(Requires MongoDB)' : false 
-          },
-          { 
-            name: 'None (Raw drivers)', 
-            value: 'none' 
-          }
+          { name: 'Prisma', value: 'prisma' },
+          { name: 'Mongoose', value: 'mongoose', disabled: database !== 'mongodb' ? '(Requires MongoDB)' : false },
+          { name: 'None (Raw drivers)', value: 'none' }
         ]
       });
     }
 
-    // Creating the data object that will eventually be saved to forgex.json
+    // Architecture removed from configDetails
     const configDetails = {
       projectName,
-      architecture,
       packageManager,
       database,
       orm
     };
 
     console.log('\n' + chalk.green('✔ Configuration saved for forgex.json:'));
-    console.table(configDetails); // Using console.table for a clean, professional look!
+    console.table(configDetails); 
     
     console.log(''); 
     await createProjectStructure(configDetails);
