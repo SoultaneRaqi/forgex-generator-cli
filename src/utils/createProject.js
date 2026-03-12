@@ -107,9 +107,9 @@ export async function createProjectStructure(config) {
       console.log(chalk.cyan(`\n🚀 Starting development server in ./${projectName}...\n`));
 
       // Spawn hands over the terminal to the Nodemon process
-      const child = spawn(packageManager, ['run', 'dev'], {
+      const child = spawn(`${packageManager} run dev`, [], {
         cwd: projectPath,
-        stdio: 'inherit', // This tells the child process to use the main terminal
+        stdio: 'inherit',
         shell: true
       });
 
