@@ -1,20 +1,9 @@
 import chalk from 'chalk';
-
 import { input, select, checkbox, confirm } from '@inquirer/prompts'; 
 import { createProjectStructure } from '../utils/createProject.js';
 
 export const initCommand = async () => {
-  const logo = `
-  ███████╗ ██████╗ ██████╗  ██████╗ ███████╗██╗  ██╗
-  ██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝╚██╗██╔╝
-  █████╗  ██║   ██║██████╔╝██║  ███╗█████╗   ╚███╔╝ 
-  ██╔══╝  ██║   ██║██╔══██╗██║   ██║██╔══╝   ██╔██╗ 
-  ██║     ╚██████╔╝██║  ██║╚██████╔╝███████╗██╔╝ ██╗
-  ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
-  `;
-  
-  console.log(chalk.cyan(logo));
-  console.log(chalk.bgCyan.black(' ForgeX Init: Forging your backend... \n'));
+  console.log(chalk.bgCyan.black('\n ForgeX Init: Forging your backend... \n'));
 
   try {
     const projectName = await input({ message: 'What is the name of your project?', default: 'my-express-api' });
