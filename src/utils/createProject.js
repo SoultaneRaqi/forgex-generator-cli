@@ -73,6 +73,15 @@ export async function createProjectStructure(config) {
     const notFoundContent = await ejs.renderFile(path.join(__dirname, '../templates/core/middlewares/notFound.js.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'src/core/middlewares', 'notFound.js'), notFoundContent);
 
+    // Render Utils
+    const catchAsyncContent = await ejs.renderFile(path.join(__dirname, '../templates/core/utils/catchAsync.js.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'src/core/utils', 'catchAsync.js'), catchAsyncContent);
+
+    // Render Central Router Hub
+    const routesHubContent = await ejs.renderFile(path.join(__dirname, '../templates/core/routes.js.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'src/core', 'routes.js'), routesHubContent);
+
+    
     // Render README
     const readmeContent = await ejs.renderFile(path.join(templateDir, 'README.md.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'README.md'), readmeContent);

@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { notFound } from './core/middlewares/notFound.js';
 import { errorHandler } from './core/middlewares/errorHandler.js';
+import centralRouter from './core/routes.js'; // Centralized router hub for all module routes
 <%- extraPackages.includes('helmet') ? "import helmet from 'helmet';\n" : "" -%>
 <%- extraPackages.includes('morgan') ? "import morgan from 'morgan';\n" : "" -%>
 
@@ -24,6 +25,8 @@ app.get('/', (req, res) => {
     database: '<%- database %>'
   });
 });
+
+app.use('/api/v1', centralRouter); // All module routes will be prefixed with /api/v1 for better versioning and organization
 
 // Global Error Handlers
 app.use(notFound);
