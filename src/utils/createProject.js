@@ -60,6 +60,10 @@ export async function createProjectStructure(config) {
     const serverContent = await ejs.renderFile(path.join(templateDir, 'server.js.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'src', 'server.js'), serverContent);
     
+    const dbTemplatePath = path.join(__dirname, '../templates/core/config/db.js.ejs');
+    const dbContent = await ejs.renderFile(dbTemplatePath, config);
+    await fs.writeFile(path.join(projectPath, 'src/core/config', 'db.js'), dbContent);
+    
     const readmeContent = await ejs.renderFile(path.join(templateDir, 'README.md.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'README.md'), readmeContent);
 
