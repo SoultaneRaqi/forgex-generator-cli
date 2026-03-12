@@ -57,19 +57,31 @@ export async function createProjectStructure(config) {
     const appContent = await ejs.renderFile(path.join(templateDir, 'app.js.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'src', 'app.js'), appContent);
 
+    // Render server.js with database connection logic based on the selected database and ORM
     const serverContent = await ejs.renderFile(path.join(templateDir, 'server.js.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'src', 'server.js'), serverContent);
     
+    // Render DB config based on the selected database and ORM
     const dbTemplatePath = path.join(__dirname, '../templates/core/config/db.js.ejs');
     const dbContent = await ejs.renderFile(dbTemplatePath, config);
     await fs.writeFile(path.join(projectPath, 'src/core/config', 'db.js'), dbContent);
-    
+
+    // Render Middlewares
+    const errorHandlerContent = await ejs.renderFile(path.join(__dirname, '../templates/core/middlewares/errorHandler.js.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'src/core/middlewares', 'errorHandler.js'), errorHandlerContent);
+
+    const notFoundContent = await ejs.renderFile(path.join(__dirname, '../templates/core/middlewares/notFound.js.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'src/core/middlewares', 'notFound.js'), notFoundContent);
+
+    // Render README
     const readmeContent = await ejs.renderFile(path.join(templateDir, 'README.md.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'README.md'), readmeContent);
 
+    // Render .env.example
     const envExampleContent = await ejs.renderFile(path.join(templateDir, '.env.example.ejs'), config);
     await fs.writeFile(path.join(projectPath, '.env.example'), envExampleContent);
 
+    // Render .gitignore
     const gitignoreContent = "node_modules\n.env\n.DS_Store\ncoverage\n";
     await fs.writeFile(path.join(projectPath, '.gitignore'), gitignoreContent);
 
