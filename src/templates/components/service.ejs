@@ -1,0 +1,27 @@
+// Import your database model/client here
+// Example: import <%- name %> from './<%- name.toLowerCase() %>.model.js';
+
+export const findAll = async () => {
+  // return await <%- name %>.find();
+  return ['List of <%- name.toLowerCase() %>s'];
+};
+
+export const findById = async (id) => {
+  // return await <%- name %>.findById(id);
+  return `Details for <%- name.toLowerCase() %> ${id}`;
+};
+
+export const create = async (data) => {
+  // return await <%- name %>.create(data);
+  return `Created new <%- name.toLowerCase() %>`;
+};
+
+export const update = async (id, data) => {
+  // return await <%- name %>.findByIdAndUpdate(id, data, { new: true });
+  return `Updated <%- name.toLowerCase() %> ${id}`;
+};
+
+export const remove = async (id) => {
+  // return await <%- name %>.findByIdAndDelete(id);
+  return `Deleted <%- name.toLowerCase() %> ${id}`;
+};

@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import * as <%- name.toLowerCase() %>Controller from './<%- name.toLowerCase() %>.controller.js';
+
+const router = Router();
+
+router.route('/')
+  .get(<%- name.toLowerCase() %>Controller.get<%- name %>s)
+  .post(<%- name.toLowerCase() %>Controller.create<%- name %>);
+
+router.route('/:id')
+  .get(<%- name.toLowerCase() %>Controller.get<%- name %>ById)
+  .put(<%- name.toLowerCase() %>Controller.update<%- name %>)
+  .delete(<%- name.toLowerCase() %>Controller.delete<%- name %>);
+
+export default router;

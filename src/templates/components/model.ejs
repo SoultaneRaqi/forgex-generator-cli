@@ -1,0 +1,36 @@
+<%_ if (config.orm === 'mongoose') { _%>
+import mongoose from 'mongoose';
+
+const <%- name.toLowerCase() %>Schema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please add a name'],
+    trim: true,
+  },
+  // Add more fields here
+}, {
+  timestamps: true
+});
+
+export default mongoose.model('<%- name %>', <%- name.toLowerCase() %>Schema);
+
+<%_ } else if (config.orm === 'prisma') { _%>
+/**
+ * ForgeX Notice:
+ * You are using Prisma ORM. 
+ * Please define your <%- name %> model in the root `prisma/schema.prisma` file.
+ * * Example:
+ * model <%- name %> {
+ * id        String   @id @default(uuid())
+ * name      String
+ * createdAt DateTime @default(now())
+ * updatedAt DateTime @updatedAt
+ * }
+ * * Then run: npx prisma db push
+ */
+<%_ } else { _%>
+/**
+ * <%- name %> Model
+ * Add your raw SQL queries or native driver logic here.
+ */
+<%_ } _%>
