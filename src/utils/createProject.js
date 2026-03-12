@@ -28,7 +28,7 @@ export async function createProjectStructure(config) {
   try {
     // 1. Create the root folder & state file
     await fs.mkdir(projectPath);
-    const forgexConfigPath = path.join(projectPath, 'forgex.json');
+    const forgexConfigPath = path.join(projectPath, 'forgex.fx'); 
     await fs.writeFile(forgexConfigPath, JSON.stringify(config, null, 2));
 
     // 2. Scaffold Directories (Unified Modular Architecture)
@@ -59,7 +59,13 @@ export async function createProjectStructure(config) {
 
     const serverContent = await ejs.renderFile(path.join(templateDir, 'server.js.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'src', 'server.js'), serverContent);
+    
+    const readmeContent = await ejs.renderFile(path.join(templateDir, 'README.md.ejs'), config);
+    await fs.writeFile(path.join(projectPath, 'README.md'), readmeContent);
 
+    const envExampleContent = await ejs.renderFile(path.join(templateDir, '.env.example.ejs'), config);
+    await fs.writeFile(path.join(projectPath, '.env.example'), envExampleContent);
+    
     const gitignoreContent = "node_modules\n.env\n.DS_Store\ncoverage\n";
     await fs.writeFile(path.join(projectPath, '.gitignore'), gitignoreContent);
 
