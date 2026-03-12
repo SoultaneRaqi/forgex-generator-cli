@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import chalk from 'chalk';
 import ora from 'ora';
 import ejs from 'ejs';
-import { exec } from 'child_process'; 
+import { exec, spawn } from 'child_process';
 import util from 'util'; 
 
 // Promisify exec so we can use await with it
@@ -65,7 +65,7 @@ export async function createProjectStructure(config) {
 
     const envExampleContent = await ejs.renderFile(path.join(templateDir, '.env.example.ejs'), config);
     await fs.writeFile(path.join(projectPath, '.env.example'), envExampleContent);
-    
+
     const gitignoreContent = "node_modules\n.env\n.DS_Store\ncoverage\n";
     await fs.writeFile(path.join(projectPath, '.gitignore'), gitignoreContent);
 
@@ -82,12 +82,37 @@ export async function createProjectStructure(config) {
       spinner.warn(chalk.yellow(`Files created, but failed to install dependencies automatically. Please run '${packageManager} install' manually.`));
     }
 
-    // 5. Final Output Instructions
-    console.log('\n' + chalk.bgGreen.black(' FORGEX COMPLETE '));
-    console.log(chalk.white('\nYour project is ready! Next steps:'));
-    console.log(chalk.cyan(`  cd ${projectName}`));
-    console.log(chalk.cyan(`  ${packageManager} run dev\n`));
+    // 5. Epic 4: Auto-Installation!
+    spinner.text = chalk.cyan(`Installing dependencies using ${packageManager}... (This might take a minute)`);
+    try {
+      await execAsync(`${packageManager} install`, { cwd: projectPath });
+      spinner.succeed(chalk.green('Project dependencies installed successfully!'));
+    } catch (installError) {
+      spinner.warn(chalk.yellow(`Files created, but failed to install dependencies automatically. Please run '${packageManager} install' manually.`));
+    }
 
+    // j Start Server Logic
+    if (config.startServer) {
+      console.log('\n' + chalk.bgGreen.black(' FORGEX COMPLETE '));
+      console.log(chalk.cyan(`\n🚀 Starting development server in ./${projectName}...\n`));
+
+      // Spawn hands over the terminal to the Nodemon process
+      const child = spawn(packageManager, ['run', 'dev'], {
+        cwd: projectPath,
+        stdio: 'inherit', // This tells the child process to use the main terminal
+        shell: true
+      });
+
+      child.on('error', (err) => {
+        console.error(chalk.red('Failed to start the server:'), err);
+      });
+      
+    } else {
+      console.log('\n' + chalk.bgGreen.black(' FORGEX COMPLETE '));
+      console.log(chalk.white('\nYour project is ready! Next steps:'));
+      console.log(chalk.cyan(`  cd ${projectName}`));
+      console.log(chalk.cyan(`  ${packageManager} run dev\n`));
+    }
   } catch (error) {
     spinner.fail(chalk.red('Failed to forge project structure.'));
     console.error(error);

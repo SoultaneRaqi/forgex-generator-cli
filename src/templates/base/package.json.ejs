@@ -11,7 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"<%- orm === 'prisma' ? ",\n    \"@prisma/client\": \"^5.10.2\"" : "" %><%- database === 'mongodb' && orm === 'mongoose' ? ",\n    \"mongoose\": \"^8.2.0\"" : "" %>
+    "express": "^4.19.2"<%- orm === 'prisma' ? ',\n    "@prisma/client": "^5.10.2"' : '' %><%- database === 'mongodb' && orm === 'mongoose' ? ',\n    "mongoose": "^8.2.0"' : '' %><%- extraPackages.includes('helmet') ? ',\n    "helmet": "^7.1.0"' : '' %><%- extraPackages.includes('morgan') ? ',\n    "morgan": "^1.10.0"' : '' %><%- extraPackages.includes('zod') ? ',\n    "zod": "^3.22.4"' : '' %><%- extraPackages.includes('bcrypt') ? ',\n    "bcrypt": "^5.1.1"' : '' %><%- extraPackages.includes('jsonwebtoken') ? ',\n    "jsonwebtoken": "^9.0.2"' : '' %><%- extraPackages.includes('axios') ? ',\n    "axios": "^1.6.7"' : '' %>
   },
   "devDependencies": {
     "nodemon": "^3.1.0"<%- orm === 'prisma' ? ",\n    \"prisma\": \"^5.10.2\"" : "" %>
