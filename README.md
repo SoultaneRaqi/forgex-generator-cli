@@ -1,371 +1,169 @@
-```markdown
-# 🛠️ ForgeX CLI
+```
+  ███████╗ ██████╗ ██████╗  ██████╗ ███████╗██╗  ██╗
+  ██╔════╝██╔═══██╗██╔══██╗██╔════╝ ██╔════╝╚██╗██╔╝
+  █████╗  ██║   ██║██████╔╝██║  ███╗█████╗   ╚███╔╝ 
+  ██╔══╝  ██║   ██║██╔══██╗██║   ██║██╔══╝   ██╔██╗ 
+  ██║     ╚██████╔╝██║  ██║╚██████╔╝███████╗██╔╝ ██╗
+  ╚═╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
+```
 
-**ForgeX CLI** is a developer-experience focused command line tool for **Node.js and Express** that generates production-ready backend architectures and removes repetitive boilerplate.  
+<div align="center">
 
-Inspired by **Laravel Artisan**, ForgeX helps developers scaffold controllers, routes, services, and models while automatically wiring them together. The goal is to make building scalable Express backends **faster, cleaner, and more structured**.
+**Scaffold production-ready Node.js backends in seconds.**
+
+[![npm version](https://img.shields.io/npm/v/forgex-cli?color=orange&style=flat-square)](https://www.npmjs.com/package/forgex-cli)
+[![npm downloads](https://img.shields.io/npm/dm/forgex-cli?color=orange&style=flat-square)](https://www.npmjs.com/package/forgex-cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D16-green?style=flat-square)](https://nodejs.org)
+
+[Getting Started](#-getting-started) · [Features](#-features) · [Usage](#-usage) · [Generated Structure](#-generated-structure) · [Contributing](#-contributing)
+
+</div>
 
 ---
 
-# 🚀 Why ForgeX?
+## What is ForgeX?
 
-Express is extremely flexible, but it does not enforce a default project structure. Every developer ends up reinventing the same architecture and writing the same boilerplate code.
+**ForgeX CLI** is an interactive command-line tool that scaffolds fully structured, production-ready Node.js backends in seconds. Answer a few prompts — pick your database, ORM, and package manager — and ForgeX generates a complete, organized project so you can skip the boilerplate and start building immediately.
 
-ForgeX solves this by:
-
-- Generating **standardized backend architectures**
-- Automating **file generation**
-- Auto-wiring routes into the application
-- Integrating **Prisma ORM**
-- Providing a **Laravel-like development workflow**
-
-Instead of spending time creating folders and files manually, developers can focus on building features.
+No more copy-pasting starter code. No more manual folder setup. Just `npx forgex-cli` and forge.
 
 ---
 
-# ✨ Features
+## ✨ Features
 
-### Project Scaffolding
-Generate a fully structured Node.js + Express backend with one command.
-
-### Architecture Selection
-Choose between:
-
-**Standard (Layered Architecture)**
-
-```
-
-src/
-controllers/
-routes/
-services/
-models/
-middlewares/
-config/
-
-```
-
-**Advanced (Modular / Feature-Based Architecture)**
-
-```
-
-src/
-core/
-modules/
-users/
-user.controller.js
-user.service.js
-user.routes.js
-user.model.js
-
-````
-
-### File Generators
-Create backend components instantly:
-
-- Controllers
-- Routes
-- Services
-- Models
-
-### Auto Route Wiring
-When a route is generated, ForgeX automatically:
-
-- imports the route
-- registers it in `app.js`
-
-Example:
-
-```js
-app.use('/api/users', userRoutes)
-````
-
-No manual editing required.
-
-### Prisma ORM Integration
-
-ForgeX can configure **Prisma** automatically for:
-
-* PostgreSQL
-* MySQL
-* MongoDB
-
-### Resource Generator
-
-Generate a complete backend resource:
-
-```
-Controller
-Service
-Model
-Route
-```
-
-All connected automatically.
-
-### Postman Collection Generator
-
-ForgeX automatically generates and updates:
-
-```
-postman_collection.json
-```
-
-Developers can instantly test new endpoints.
+- 🏗️ **Modular architecture** — Feature-based folder structure that scales cleanly as your project grows
+- 🗄️ **Multi-database support** — PostgreSQL, MySQL, MongoDB, and SQLite out of the box
+- 🔌 **ORM / ODM choices** — Prisma, Sequelize, Mongoose, or native drivers
+- 📦 **Package manager aware** — Works with `npm`, `yarn`, and `pnpm`
+- ⚡ **Auto-install** — Optionally installs dependencies immediately after scaffolding
+- 📄 **Pre-configured files** — `.env.example`, `nodemon` config, ESLint, and a ready-to-use `README.md`
+- 🔐 **Environment-safe** — Secrets never end up in your repo thanks to `.gitignore` and `.env.example` out of the box
 
 ---
 
-# 📦 Installation
+## 📦 Getting Started
 
-Clone the repository:
+### Requirements
 
-```bash
-git clone https://github.com/SoultaneRaqi/ForgeX-CLI.git
-```
+- Node.js `>= 16`
+- npm, yarn, or pnpm
 
-Enter the project:
-
-```bash
-cd ForgeX-CLI
-```
-
-Install dependencies:
+### Run without installing
 
 ```bash
-npm install
+npx forgex-cli
 ```
 
-Link the CLI locally:
+### Or install globally
 
 ```bash
-npm link
-```
-
-Now the `forgex` command is available globally.
-
----
-
-# ⚙️ Usage
-
-### Initialize a Project
-
-```bash
-forgex init
-```
-
-You will be prompted to select the architecture:
-
-```
-? Select project architecture
-  Standard (Layered)
-  Advanced (Modular)
-```
-
-ForgeX will generate:
-
-* project structure
-* Express server
-* configuration files
-* dependencies
-
----
-
-### Create a Controller
-
-```bash
-forgex make:controller user
-```
-
-Generated file:
-
-```
-src/controllers/user.controller.js
-```
-
-Includes basic CRUD functions.
-
----
-
-### Create a Route
-
-```bash
-forgex make:route user
-```
-
-ForgeX will:
-
-* create `user.routes.js`
-* auto-import it
-* register it inside `app.js`
-
----
-
-### Create a Model
-
-```bash
-forgex make:model user
-```
-
-ForgeX will update:
-
-```
-prisma/schema.prisma
+npm install -g forgex-cli
+forgex
 ```
 
 ---
 
-### Create a Service
+## 🚀 Usage
+
+Just run the CLI and answer the interactive prompts:
 
 ```bash
-forgex make:service user
+npx forgex-cli
 ```
 
-Includes boilerplate Prisma CRUD operations.
+```
+? What is your project name?          my-api
+? Which database will you use?        PostgreSQL
+? Which ORM / ODM?                    Prisma
+? Which package manager?              npm
+? Auto-install dependencies?          Yes
 
----
+  ✔ Project scaffolded
+  ✔ Dependencies installed
+  ✔ You're ready to forge!
+```
 
-### Create a Full Resource
+Then start building:
 
 ```bash
-forgex make:resource user
-```
-
-This generates:
-
-```
-controller
-service
-model
-route
-```
-
-All connected automatically.
-
----
-
-### Run Database Migration
-
-```bash
-forgex migrate
-```
-
-Wrapper for:
-
-```
-npx prisma migrate dev
+cd my-api
+cp .env.example .env   # add your DB credentials
+npm run dev
 ```
 
 ---
 
-# 🧠 Example Generated Structure
-
-Advanced architecture example:
+## 🗂️ Generated Structure
 
 ```
 my-api/
-│
 ├── src/
 │   ├── core/
-│   │   ├── config
-│   │   └── middlewares
-│   │
-│   ├── modules/
-│   │   └── users/
-│   │       ├── user.controller.js
-│   │       ├── user.service.js
-│   │       ├── user.routes.js
-│   │       └── user.model.js
-│   │
-│   ├── app.js
-│   └── server.js
-│
-├── prisma/
-│   └── schema.prisma
-│
-├── postman_collection.json
+│   │   ├── config/           # App-wide configuration (env, db connection)
+│   │   └── middleware/       # Global middlewares (error handler, auth, etc.)
+│   └── modules/
+│       └── <feature>/
+│           ├── <feature>.routes.js
+│           ├── <feature>.controller.js
+│           └── <feature>.service.js
+├── .env.example              # Environment variable template
+├── .gitignore
+├── nodemon.json
 ├── package.json
-└── .env
+└── README.md                 # Auto-generated project README
 ```
 
----
-
-# 🧰 Tech Stack
-
-ForgeX is built using:
-
-* **Node.js**
-* **Commander** (CLI command parsing)
-* **Inquirer** (interactive prompts)
-* **Chalk** (terminal styling)
-* **Ora** (CLI loading spinners)
-* **EJS** (file templates)
-* **Prisma** (database ORM)
+> All application logic lives in `src/modules/` — one folder per domain. Global concerns (config, middleware) live in `src/core/`. Clean, obvious, and easy to extend.
 
 ---
 
-# 🗺️ Roadmap
+## 🗄️ Supported Stack
 
-### v1.0.0
-
-* CLI foundation
-* Project scaffolding
-* Controller and route generators
-* Auto route wiring
-
-### v1.5.0
-
-* Prisma ORM integration
-* Model and service generators
-* Database migration command
-
-### v2.0.0
-
-* `make:resource`
-* Postman collection auto generation
-
-### v3.0.0
-
-* Plugin system
-* GraphQL templates
-* WebSocket templates
-* Jest testing generator
+| Category | Options |
+|---|---|
+| **Database** | PostgreSQL, MySQL, MongoDB, SQLite |
+| **ORM / ODM** | Prisma, Sequelize, Mongoose, Native Drivers |
+| **Package Manager** | npm, yarn, pnpm |
+| **Framework** | Express.js |
 
 ---
 
-# 🤝 Contributing
+## 🔧 Available Scripts (in generated project)
 
-Contributions are welcome.
+| Script | Description |
+|---|---|
+| `dev` | Start with hot-reload via nodemon |
+| `start` | Start in production mode |
+| `lint` | Run ESLint across the project |
+| `test` | Run the test suite |
 
-If you'd like to improve ForgeX:
+---
+
+## 🤝 Contributing
+
+Contributions are welcome and appreciated!
 
 1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
+2. Create your branch: `git checkout -b feat/amazing-feature`
+3. Commit your changes: `git commit -m "feat: add amazing feature"`
+4. Push to your branch: `git push origin feat/amazing-feature`
+5. Open a Pull Request
+
+Please follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
 
 ---
 
-# 📄 License
+## 📄 License
 
-MIT License
-
----
-
-# 👨‍💻 Author
-
-Created by **Soultane Raqi**
-
-GitHub:
-[https://github.com/SoultaneRaqi](https://github.com/SoultaneRaqi)
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for full details.
 
 ---
 
-# ⚡ Vision
+<div align="center">
 
-ForgeX aims to become the **standard scaffolding tool for Express developers**, bringing the same developer productivity that **Laravel Artisan provides to PHP**.
+*Forged with 🪓 by [Soultane Raqi](https://github.com/SoultaneRaqi)*
 
----
+If ForgeX saved you time, consider giving it a ⭐ on [GitHub](https://github.com/SoultaneRaqi/ForgeX-CLI)!
 
-**Forged with 🪓 using ForgeX**
-
-```
-```
+</div>
