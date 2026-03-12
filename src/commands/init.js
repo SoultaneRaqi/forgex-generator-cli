@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { input, select } from '@inquirer/prompts';
+import { createProjectStructure } from '../utils/createProject.js';
 
 export const initCommand = async () => {
   console.log(chalk.bgCyan.black(' ForgeX Init \n'));
@@ -82,7 +83,8 @@ export const initCommand = async () => {
     console.log('\n' + chalk.green('✔ Configuration saved for forgex.json:'));
     console.table(configDetails); // Using console.table for a clean, professional look!
     
-    console.log('\n' + chalk.yellow(`Next phase: Building the filesystem engine...`));
+    console.log(''); 
+    await createProjectStructure(configDetails);
 
   } catch (error) {
     if (error.name === 'ExitPromptError') {
