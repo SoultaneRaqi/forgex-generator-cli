@@ -4,14 +4,18 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
 import ora from 'ora';
-import ejs from 'ejs'; 
+import ejs from 'ejs';
+import { exec } from 'child_process'; 
+import util from 'util'; 
 
-// ES Module fix for __dirname
+// Promisify exec so we can use await with it
+const execAsync = util.promisify(exec);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function createProjectStructure(config) {
-  const { projectName, architecture } = config;
+  const { projectName, architecture, packageManager } = config; 
   const projectPath = path.join(process.cwd(), projectName);
 
   if (existsSync(projectPath)) {
@@ -41,25 +45,37 @@ export async function createProjectStructure(config) {
       await fs.mkdir(path.join(projectPath, folder), { recursive: true });
     }
 
+    // 3. Template Compilation Magic
     spinner.text = chalk.cyan('Compiling baseline files...');
-
-    // 3. Template Compilation Magic!
-    // Point to our templates folder
     const templateDir = path.join(__dirname, '../templates/base');
 
-    // Read the package.json.ejs template, inject 'config', and save it as package.json
     const packageContent = await ejs.renderFile(path.join(templateDir, 'package.json.ejs'), config);
     await fs.writeFile(path.join(projectPath, 'package.json'), packageContent);
 
-    // Read the .env.ejs template, inject 'config', and save it as .env
     const envContent = await ejs.renderFile(path.join(templateDir, '.env.ejs'), config);
     await fs.writeFile(path.join(projectPath, '.env'), envContent);
 
-    // Create a quick standard .gitignore file directly
     const gitignoreContent = "node_modules\n.env\n.DS_Store\ncoverage\n";
     await fs.writeFile(path.join(projectPath, '.gitignore'), gitignoreContent);
 
-    spinner.succeed(chalk.green('Project structure forged successfully!'));
+    // 4. Epic 4: Auto-Installation!
+    spinner.text = chalk.cyan(`Installing dependencies using ${packageManager}... (This might take a minute)`);
+    
+    // Execute the install command inside the new project folder
+    try {
+      await execAsync(`${packageManager} install`, { cwd: projectPath });
+      spinner.succeed(chalk.green('Project dependencies installed successfully!'));
+    } catch (installError) {
+      // If installation fails (e.g., no internet), we don't want to crash the whole tool.
+      // We just warn them so they can do it manually.
+      spinner.warn(chalk.yellow(`Files created, but failed to install dependencies automatically. Please run '${packageManager} install' manually.`));
+    }
+
+    // 5. Final Output Instructions
+    console.log('\n' + chalk.bgGreen.black(' FORGEX COMPLETE '));
+    console.log(chalk.white('\nYour project is ready! Next steps:'));
+    console.log(chalk.cyan(`  cd ${projectName}`));
+    console.log(chalk.cyan(`  ${packageManager} run dev\n`));
 
   } catch (error) {
     spinner.fail(chalk.red('Failed to forge project structure.'));

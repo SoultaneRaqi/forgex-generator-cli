@@ -1,5 +1,5 @@
 {
-  "name": "<%= projectName %>",
+  "name": "<%- projectName %>",
   "version": "1.0.0",
   "description": "Auto-generated Express API by ForgeX",
   "main": "src/server.js",
@@ -11,9 +11,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"<%= orm === 'prisma' ? ",\n    \"@prisma/client\": \"^5.10.2\"" : "" %><%= database === 'mongodb' && orm === 'mongoose' ? ",\n    \"mongoose\": \"^8.2.0\"" : "" %>
+    "express": "^4.19.2"<%- orm === 'prisma' ? ",\n    \"@prisma/client\": \"^5.10.2\"" : "" %><%- database === 'mongodb' && orm === 'mongoose' ? ",\n    \"mongoose\": \"^8.2.0\"" : "" %>
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"<%= orm === 'prisma' ? ",\n    \"prisma\": \"^5.10.2\"" : "" %>
+    "nodemon": "^3.1.0"<%- orm === 'prisma' ? ",\n    \"prisma\": \"^5.10.2\"" : "" %>
   }
 }
