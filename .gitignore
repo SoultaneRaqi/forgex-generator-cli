@@ -58,3 +58,8 @@ dist/
 # Temporary files
 tmp/
 temp/
+
+/
+
+
+my-express-api/ 
