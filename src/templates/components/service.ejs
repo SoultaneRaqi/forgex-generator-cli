@@ -1,27 +1,68 @@
-// Import your database model/client here
-// Example: import <%- name %> from './<%- name.toLowerCase() %>.model.js';
+<%_ if (config.orm === 'mongoose') { _%>
+import <%- name %> from './<%- name.toLowerCase() %>.model.js';
 
-export const findAll = async () => {
-  // return await <%- name %>.find();
-  return ['List of <%- name.toLowerCase() %>s'];
+export const findAll = async (query = {}) => {
+  // Basic Pagination Scaffolding
+  const page = parseInt(query.page, 10) || 1;
+  const limit = parseInt(query.limit, 10) || 10;
+  const startIndex = (page - 1) * limit;
+
+  const total = await <%- name %>.countDocuments();
+  const data = await <%- name %>.find().skip(startIndex).limit(limit);
+
+  return {
+    pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+    data
+  };
 };
 
 export const findById = async (id) => {
-  // return await <%- name %>.findById(id);
+  return await <%- name %>.findById(id);
+};
+
+export const create = async (payload) => {
+  return await <%- name %>.create(payload);
+};
+
+export const update = async (id, payload) => {
+  return await <%- name %>.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+};
+
+export const remove = async (id) => {
+  return await <%- name %>.findByIdAndDelete(id);
+};
+<%_ } else { _%>
+// Import your database model/client here
+// Example: import db from '../../core/config/db.js';
+
+export const findAll = async (query = {}) => {
+  // Add your pagination and filtering logic here
+  return {
+    pagination: { page: 1, limit: 10, total: 1 },
+    data: ['List of <%- name.toLowerCase() %>s']
+  };
+};
+
+export const findById = async (id) => {
+  // return await db.query(...)
   return `Details for <%- name.toLowerCase() %> ${id}`;
 };
 
-export const create = async (data) => {
-  // return await <%- name %>.create(data);
+export const create = async (payload) => {
+  // return await db.query(...)
   return `Created new <%- name.toLowerCase() %>`;
 };
 
-export const update = async (id, data) => {
-  // return await <%- name %>.findByIdAndUpdate(id, data, { new: true });
+export const update = async (id, payload) => {
+  // return await db.query(...)
   return `Updated <%- name.toLowerCase() %> ${id}`;
 };
 
 export const remove = async (id) => {
-  // return await <%- name %>.findByIdAndDelete(id);
-  return `Deleted <%- name.toLowerCase() %> ${id}`;
+  // return await db.query(...)
+  return true; // Return true if deleted successfully
 };
+<%_ } _%>

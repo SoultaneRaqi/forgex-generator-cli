@@ -1,28 +1,45 @@
 <%_ if (config.orm === 'mongoose') { _%>
 import mongoose from 'mongoose';
 
-const <%- name.toLowerCase() %>Schema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please add a name'],
-    trim: true,
+const <%- name.toLowerCase() %>Schema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please provide a name for the <%- name %>'],
+      trim: true,
+      maxlength: [100, 'Name cannot be more than 100 characters'],
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    // Add your other fields here...
   },
-  // Add more fields here
-}, {
-  timestamps: true
-});
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
+);
+
+// Example: Add a pre-save hook for hashing passwords or slugifying names
+// <%- name.toLowerCase() %>Schema.pre('save', async function (next) {
+//   // console.log('<%- name %> is about to be saved');
+//   next();
+// });
 
 export default mongoose.model('<%- name %>', <%- name.toLowerCase() %>Schema);
 
 <%_ } else if (config.orm === 'prisma') { _%>
 /**
  * ForgeX Notice:
- * You are using Prisma ORM. 
+ * You selected Prisma ORM.
  * Please define your <%- name %> model in the root `prisma/schema.prisma` file.
  * * Example:
  * model <%- name %> {
  * id        String   @id @default(uuid())
  * name      String
+ * isActive  Boolean  @default(true)
  * createdAt DateTime @default(now())
  * updatedAt DateTime @updatedAt
  * }
@@ -32,5 +49,7 @@ export default mongoose.model('<%- name %>', <%- name.toLowerCase() %>Schema);
 /**
  * <%- name %> Model
  * Add your raw SQL queries or native driver logic here.
+ * * Example: 
+ * export const createTable = "CREATE TABLE <%- name.toLowerCase() %>s (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL);";
  */
 <%_ } _%>

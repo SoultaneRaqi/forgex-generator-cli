@@ -1,15 +1,35 @@
 import { Router } from 'express';
 import * as <%- name.toLowerCase() %>Controller from './<%- name.toLowerCase() %>.controller.js';
 
+// TODO: Import your authentication middleware here
+// import { protect, authorize } from '../../core/middlewares/auth.js';
+
 const router = Router();
 
+// ==========================================
+// Route:   /api/v1/<%- name.toLowerCase() %>s
+// ==========================================
 router.route('/')
   .get(<%- name.toLowerCase() %>Controller.get<%- name %>s)
-  .post(<%- name.toLowerCase() %>Controller.create<%- name %>);
+  .post(
+    // protect, 
+    // authorize('admin'), 
+    <%- name.toLowerCase() %>Controller.create<%- name %>
+  );
 
+// ==========================================
+// Route:   /api/v1/<%- name.toLowerCase() %>s/:id
+// ==========================================
 router.route('/:id')
   .get(<%- name.toLowerCase() %>Controller.get<%- name %>ById)
-  .put(<%- name.toLowerCase() %>Controller.update<%- name %>)
-  .delete(<%- name.toLowerCase() %>Controller.delete<%- name %>);
+  .put(
+    // protect, 
+    <%- name.toLowerCase() %>Controller.update<%- name %>
+  )
+  .delete(
+    // protect, 
+    // authorize('admin'), 
+    <%- name.toLowerCase() %>Controller.delete<%- name %>
+  );
 
 export default router;

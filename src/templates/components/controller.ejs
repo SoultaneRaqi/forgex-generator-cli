@@ -2,22 +2,33 @@ import { catchAsync } from '../../core/utils/catchAsync.js';
 import * as <%- name.toLowerCase() %>Service from './<%- name.toLowerCase() %>.service.js';
 
 /**
- * @desc    Get all <%- name.toLowerCase() %>s
+ * @desc    Retrieve all <%- name.toLowerCase() %>s (with pagination & filtering)
  * @route   GET /api/v1/<%- name.toLowerCase() %>s
  * @access  Public
  */
 export const get<%- name %>s = catchAsync(async (req, res) => {
-  const data = await <%- name.toLowerCase() %>Service.findAll();
-  res.status(200).json({ success: true, data });
+  const result = await <%- name.toLowerCase() %>Service.findAll(req.query);
+  
+  res.status(200).json({
+    success: true,
+    count: result.data?.length || 0,
+    ...result, // Spreads pagination metadata and data
+  });
 });
 
 /**
- * @desc    Get a single <%- name.toLowerCase() %>
+ * @desc    Retrieve a single <%- name.toLowerCase() %> by ID
  * @route   GET /api/v1/<%- name.toLowerCase() %>s/:id
  * @access  Public
  */
 export const get<%- name %>ById = catchAsync(async (req, res) => {
   const data = await <%- name.toLowerCase() %>Service.findById(req.params.id);
+  
+  if (!data) {
+    res.status(404);
+    throw new Error('<%- name %> not found');
+  }
+
   res.status(200).json({ success: true, data });
 });
 
@@ -28,16 +39,23 @@ export const get<%- name %>ById = catchAsync(async (req, res) => {
  */
 export const create<%- name %> = catchAsync(async (req, res) => {
   const data = await <%- name.toLowerCase() %>Service.create(req.body);
+  
   res.status(201).json({ success: true, data });
 });
 
 /**
- * @desc    Update a <%- name.toLowerCase() %>
+ * @desc    Update an existing <%- name.toLowerCase() %>
  * @route   PUT /api/v1/<%- name.toLowerCase() %>s/:id
  * @access  Private
  */
 export const update<%- name %> = catchAsync(async (req, res) => {
   const data = await <%- name.toLowerCase() %>Service.update(req.params.id, req.body);
+  
+  if (!data) {
+    res.status(404);
+    throw new Error('<%- name %> not found');
+  }
+
   res.status(200).json({ success: true, data });
 });
 
@@ -47,6 +65,12 @@ export const update<%- name %> = catchAsync(async (req, res) => {
  * @access  Private
  */
 export const delete<%- name %> = catchAsync(async (req, res) => {
-  await <%- name.toLowerCase() %>Service.remove(req.params.id);
+  const isDeleted = await <%- name.toLowerCase() %>Service.remove(req.params.id);
+  
+  if (!isDeleted) {
+    res.status(404);
+    throw new Error('<%- name %> not found');
+  }
+
   res.status(200).json({ success: true, message: '<%- name %> deleted successfully' });
 });
