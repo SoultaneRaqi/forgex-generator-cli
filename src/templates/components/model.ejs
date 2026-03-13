@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 
 const <%- name.toLowerCase() %>Schema = new mongoose.Schema(
   {
+    <%_ if (options.empty) { _%>
+    // Define your custom schema fields here...
+    <%_ } else { _%>
     name: {
       type: String,
       required: [true, 'Please provide a name for the <%- name %>'],
@@ -14,11 +17,14 @@ const <%- name.toLowerCase() %>Schema = new mongoose.Schema(
       default: true,
     },
     // Add your other fields here...
+    <%_ } _%>
   },
   {
     timestamps: true,
+    <%_ if (!options.empty) { _%>
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
+    <%_ } _%>
   }
 );
 
@@ -35,21 +41,10 @@ export default mongoose.model('<%- name %>', <%- name.toLowerCase() %>Schema);
  * ForgeX Notice:
  * You selected Prisma ORM.
  * Please define your <%- name %> model in the root `prisma/schema.prisma` file.
- * * Example:
- * model <%- name %> {
- * id        String   @id @default(uuid())
- * name      String
- * isActive  Boolean  @default(true)
- * createdAt DateTime @default(now())
- * updatedAt DateTime @updatedAt
- * }
- * * Then run: npx prisma db push
  */
 <%_ } else { _%>
 /**
  * <%- name %> Model
  * Add your raw SQL queries or native driver logic here.
- * * Example: 
- * export const createTable = "CREATE TABLE <%- name.toLowerCase() %>s (id SERIAL PRIMARY KEY, name VARCHAR(100) NOT NULL);";
  */
 <%_ } _%>

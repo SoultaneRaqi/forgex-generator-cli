@@ -1,6 +1,18 @@
 import { catchAsync } from '../../core/utils/catchAsync.js';
 import * as <%- name.toLowerCase() %>Service from './<%- name.toLowerCase() %>.service.js';
 
+<%_ if (options.empty) { _%>
+/**
+ * @desc    Custom <%- name %> method
+ * @route   GET /api/v1/<%- name.toLowerCase() %>s/custom
+ * @access  Public
+ */
+export const customMethod = catchAsync(async (req, res) => {
+  // const data = await <%- name.toLowerCase() %>Service.customServiceLogic();
+  res.status(200).json({ success: true, message: 'Custom <%- name %> route working!' });
+});
+
+<%_ } else { _%>
 /**
  * @desc    Retrieve all <%- name.toLowerCase() %>s (with pagination & filtering)
  * @route   GET /api/v1/<%- name.toLowerCase() %>s
@@ -74,3 +86,4 @@ export const delete<%- name %> = catchAsync(async (req, res) => {
 
   res.status(200).json({ success: true, message: '<%- name %> deleted successfully' });
 });
+<%_ } _%>

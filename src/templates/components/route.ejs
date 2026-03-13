@@ -6,6 +6,13 @@ import * as <%- name.toLowerCase() %>Controller from './<%- name.toLowerCase() %
 
 const router = Router();
 
+<%_ if (options.empty) { _%>
+// ==========================================
+// Route:   /api/v1/<%- name.toLowerCase() %>s/custom
+// ==========================================
+router.get('/custom', <%- name.toLowerCase() %>Controller.customMethod);
+
+<%_ } else { _%>
 // ==========================================
 // Route:   /api/v1/<%- name.toLowerCase() %>s
 // ==========================================
@@ -31,5 +38,6 @@ router.route('/:id')
     // authorize('admin'), 
     <%- name.toLowerCase() %>Controller.delete<%- name %>
   );
+<%_ } _%>
 
 export default router;

@@ -1,6 +1,13 @@
 <%_ if (config.orm === 'mongoose') { _%>
 import <%- name %> from './<%- name.toLowerCase() %>.model.js';
 
+<%_ if (options.empty) { _%>
+export const customServiceLogic = async () => {
+  // Add your custom Mongoose logic here
+  return true;
+};
+
+<%_ } else { _%>
 export const findAll = async (query = {}) => {
   // Basic Pagination Scaffolding
   const page = parseInt(query.page, 10) || 1;
@@ -34,10 +41,19 @@ export const update = async (id, payload) => {
 export const remove = async (id) => {
   return await <%- name %>.findByIdAndDelete(id);
 };
+<%_ } _%>
+
 <%_ } else { _%>
 // Import your database model/client here
 // Example: import db from '../../core/config/db.js';
 
+<%_ if (options.empty) { _%>
+export const customServiceLogic = async () => {
+  // Add your custom logic here
+  return true;
+};
+
+<%_ } else { _%>
 export const findAll = async (query = {}) => {
   // Add your pagination and filtering logic here
   return {
@@ -63,6 +79,7 @@ export const update = async (id, payload) => {
 
 export const remove = async (id) => {
   // return await db.query(...)
-  return true; // Return true if deleted successfully
+  return true; 
 };
+<%_ } _%>
 <%_ } _%>
