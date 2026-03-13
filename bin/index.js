@@ -59,6 +59,11 @@ generateTypes.forEach((type) => {
     .description(`Generate a new ${type} for your project`)
     .option('-c, --crud', 'Generate file with full CRUD boilerplate')
     .option('-f, --force', 'Overwrite existing files')
+    
+    .option('--no-model', 'Skip generating the model file (resource only)')
+    .option('--no-service', 'Skip generating the service file (resource only)')
+    .option('--no-controller', 'Skip generating the controller file (resource only)')
+    .option('--no-route', 'Skip generating the route file (resource only)')
     .action((name, options) => {
       generateCommand(type, name, options);
     });

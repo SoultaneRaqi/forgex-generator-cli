@@ -10,17 +10,25 @@ export const generateCommand = async (type, name, options) => {
     console.log(chalk.bgCyan.black(` ForgeX Generator \n`));
     
     if (type === 'resource') {
-      console.log(chalk.white(`Forging a complete resource for ${chalk.bold(formattedName)}...\n`));
+      console.log(chalk.white(`Forging a customized resource for ${chalk.bold(formattedName)}...\n`));
       
-      // Loop through all 4 file types if they asked for a full resource!
-      const filesToGenerate = ['controller', 'route', 'service', 'model'];
+      // Conditionally build the array based on user flags
+      const filesToGenerate = [];
+      if (options.controller) filesToGenerate.push('controller');
+      if (options.route) filesToGenerate.push('route');
+      if (options.service) filesToGenerate.push('service');
+      if (options.model) filesToGenerate.push('model');
+
       for (const fileType of filesToGenerate) {
         await generateFile(fileType, formattedName, options, config);
       }
-
-      await injectRoute(formattedName);
-
-    } else {
+      
+      
+      if (options.route) {
+        await injectRoute(formattedName);
+      }
+      
+    } else { 
       console.log(chalk.white(`Forging ${chalk.bold(type)} for ${chalk.bold(formattedName)}...\n`));
       // Generate just the single requested file
       await generateFile(type, formattedName, options, config);
