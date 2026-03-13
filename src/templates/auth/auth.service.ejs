@@ -1,0 +1,56 @@
+import jwt from 'jsonwebtoken';
+<%_ if (config.orm === 'mongoose') { _%>
+import User from '../../modules/users/user.model.js';
+<%_ } _%>
+
+// Helper function to sign the JWT
+const generateToken = (id, role) => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET || 'forgex_super_secret_key', {
+    expiresIn: process.env.JWT_EXPIRE || '30d',
+  });
+};
+
+export const registerUser = async (userData) => {
+  <%_ if (config.orm === 'mongoose') { _%>
+  const user = await User.create(userData);
+  const token = generateToken(user._id, user.role);
+  
+  // Remove password before sending back to client
+  user.password = undefined; 
+  return { user, token };
+  <%_ } else { _%>
+  // TODO: Implement user creation for your specific database
+  // const user = await db.user.create({ data: userData });
+  const token = generateToken(1, 'user');
+  return { user: { id: 1, email: userData.email }, token };
+  <%_ } _%>
+};
+
+export const loginUser = async (email, password) => {
+  <%_ if (config.orm === 'mongoose') { _%>
+  // We need to explicitly select the password because our model hides it by default
+  const user = await User.findOne({ email }).select('+password');
+  
+  if (!user || !(await user.matchPassword(password))) {
+    throw new Error('Invalid email or password');
+  }
+
+  const token = generateToken(user._id, user.role);
+  user.password = undefined;
+  
+  return { user, token };
+  <%_ } else { _%>
+  // TODO: Implement user lookup and password comparison
+  const token = generateToken(1, 'user');
+  return { user: { id: 1, email }, token };
+  <%_ } _%>
+};
+
+export const getUserProfile = async (userId) => {
+  <%_ if (config.orm === 'mongoose') { _%>
+  return await User.findById(userId);
+  <%_ } else { _%>
+  // TODO: Implement user lookup
+  return { id: userId, email: 'user@example.com' };
+  <%_ } _%>
+};

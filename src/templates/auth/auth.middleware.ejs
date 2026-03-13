@@ -1,0 +1,49 @@
+import jwt from 'jsonwebtoken';
+import { catchAsync } from './catchAsync.js';
+// TODO: Import your User model/service here
+// import User from '../../modules/users/user.model.js';
+
+/**
+ * @desc   Protect routes by verifying JWT token
+ */
+export const protect = catchAsync(async (req, res, next) => {
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    res.status(401);
+    throw new Error('Not authorized to access this route. No token provided.');
+  }
+
+  try {
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Fetch the user and attach to request object
+    // req.user = await User.findById(decoded.id).select('-password');
+    
+    // For now, we attach the decoded payload
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    res.status(401);
+    throw new Error('Not authorized to access this route. Invalid token.');
+  }
+});
+
+/**
+ * @desc   Grant access to specific roles
+ */
+export const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      res.status(403);
+      throw new Error(`User role '${req.user.role}' is not authorized to access this route`);
+    }
+    next();
+  };
+};
