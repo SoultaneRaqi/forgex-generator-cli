@@ -6,6 +6,8 @@ import { initCommand } from '../src/commands/init.js';
 import { generateCommand } from '../src/commands/generate.js';
 import { listCommand } from '../src/commands/list.js';
 import { authCommand } from '../src/commands/auth.js';
+import { validatorCommand } from '../src/commands/validator.js';
+import { middlewareCommand } from '../src/commands/middleware.js';
 
 const program = new Command();
 
@@ -27,12 +29,13 @@ ${chalk.cyan.bold('Examples:')}
   $ forgex gen:auth                              ${chalk.gray('# Generate a complete JWT authentication system')}
   $ forgex gen:resource Product                  ${chalk.gray('# Generate a full CRUD resource')}
   $ forgex gen:resource Notification --no-model  ${chalk.gray('# Generate a resource without a database model')}
-  $ forgex gen:controller User                   ${chalk.gray('# Generate only a controller file')}
+  $ forgex gen:validator Product                 ${chalk.gray('# Generate a Zod/Joi validator for a resource')}
+  $ forgex gen:middleware RateLimit              ${chalk.gray('# Generate a custom middleware')}
   $ forgex gen:controller User --empty           ${chalk.gray('# Generate an empty controller file')}
   $ forgex ls                                    ${chalk.gray('# List all active resources in your project')}
 
 ${chalk.cyan.bold('Generation flags:')}
-  -e, --empty     ${chalk.gray('Generate an empty file without CRUD boilerplate')}
+  -e, --empty     ${chalk.gray('Generate an empty file without boilerplate')}
   -f, --force     ${chalk.gray('Overwrite existing files')}
 
 ${chalk.cyan.bold('Resource-only flags:')}
@@ -64,6 +67,21 @@ program
   .alias('generate:auth')
   .description('Generate a complete JWT authentication system (Auth module + User model)')
   .action(() => authCommand());
+
+program
+  .command('gen:validator <n>')
+  .alias('generate:validator')
+  .description('Generate a Zod or Joi validator for a resource (based on your init config)')
+  .option('-f, --force', 'Overwrite existing files')
+  .action((name, options) => validatorCommand(name, options));
+
+program
+  .command('gen:middleware <n>')
+  .alias('generate:middleware')
+  .description('Generate a custom middleware in src/core/middlewares/')
+  .option('-e, --empty', 'Generate a simple synchronous middleware without catchAsync')
+  .option('-f, --force', 'Overwrite existing files')
+  .action((name, options) => middlewareCommand(name, options));
 
 const generateTypes = ['controller', 'route', 'service', 'model', 'resource'];
 

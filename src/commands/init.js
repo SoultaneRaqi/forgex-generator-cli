@@ -69,10 +69,16 @@ export const initCommand = async () => {
         { name: 'Helmet (Security headers)', value: 'helmet' },
         { name: 'Morgan (HTTP request logging)', value: 'morgan' },
         { name: 'Zod (Schema validation)', value: 'zod' },
+        { name: 'Joi (Schema validation)', value: 'joi' },
         { name: 'Bcrypt (Password hashing)', value: 'bcrypt' },
         { name: 'JsonWebToken (Authentication)', value: 'jsonwebtoken' },
         { name: 'Axios (HTTP client)', value: 'axios' }
       ]
+    });
+
+    const linting = await confirm({
+      message: 'Add ESLint + Prettier for code quality?',
+      default: true
     });
 
     const startServer = await confirm({
@@ -81,12 +87,12 @@ export const initCommand = async () => {
     });
 
     const configDetails = {
-      projectName, packageManager, database, orm, extraPackages, startServer
+      projectName, packageManager, database, orm, extraPackages, linting, startServer
     };
 
     console.log('\n' + chalk.green('✔ Configuration saved for forgex.fx:'));
 
-    const { extraPackages: _, startServer: __, ...tableData } = configDetails;
+    const { extraPackages: _, startServer: __, linting: ___, ...tableData } = configDetails;
     console.table(tableData);
 
     console.log('');

@@ -1,0 +1,17 @@
+import { catchAsync } from '../utils/catchAsync.js';
+
+/**
+ * @desc   <%- name %> Middleware
+ * @usage  import { <%- name.toLowerCase() %>Middleware } from '../../core/middlewares/<%- name.toLowerCase() %>.middleware.js';
+ */
+<%_ if (options.empty) { _%>
+export const <%- name.toLowerCase() %>Middleware = (req, res, next) => {
+  // Your synchronous middleware logic here
+  next();
+};
+<%_ } else { _%>
+export const <%- name.toLowerCase() %>Middleware = catchAsync(async (req, res, next) => {
+  // Your middleware logic here
+  next();
+});
+<%_ } _%>

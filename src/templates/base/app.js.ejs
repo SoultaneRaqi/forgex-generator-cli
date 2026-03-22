@@ -1,13 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { notFound } from './core/middlewares/notFound.js';
 import { errorHandler } from './core/middlewares/errorHandler.js';
 import centralRouter from './core/routes.js'; // Centralized router hub for all module routes
 <%- extraPackages.includes('helmet') ? "import helmet from 'helmet';\n" : "" -%>
 <%- extraPackages.includes('morgan') ? "import morgan from 'morgan';\n" : "" -%>
 
-dotenv.config();
+
 
 const app = express();
 
