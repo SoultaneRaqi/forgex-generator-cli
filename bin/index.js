@@ -78,7 +78,7 @@ generateTypes.forEach((type) => {
     .alias(`generate:${type}`) 
     .description(`Generate a new ${type} for your project`)
     .option('-c, --crud', 'Generate file with full CRUD boilerplate')
-    .option('-e , --empty' , 'Generate an empty file without boilerplate')
+    .option('-e, --empty', 'Generate an empty file without boilerplate')
     .option('-f, --force', 'Overwrite existing files')
     
     .option('--no-model', 'Skip generating the model file (resource only)')

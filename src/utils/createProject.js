@@ -107,14 +107,7 @@ export async function createProjectStructure(config) {
       spinner.warn(chalk.yellow(`Files created, but failed to install dependencies automatically. Please run '${packageManager} install' manually.`));
     }
 
-    // 5. Epic 4: Auto-Installation!
-    spinner.text = chalk.cyan(`Installing dependencies using ${packageManager}... (This might take a minute)`);
-    try {
-      await execAsync(`${packageManager} install`, { cwd: projectPath });
-      spinner.succeed(chalk.green('Project dependencies installed successfully!'));
-    } catch (installError) {
-      spinner.warn(chalk.yellow(`Files created, but failed to install dependencies automatically. Please run '${packageManager} install' manually.`));
-    }
+    
 
     spinner.text = chalk.cyan('Initializing Git repository...');
     try {
