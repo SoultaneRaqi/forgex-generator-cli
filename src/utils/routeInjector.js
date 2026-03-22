@@ -2,14 +2,22 @@ import fs from 'fs/promises';
 import path from 'path';
 import chalk from 'chalk';
 
-export const injectRoute = async (name) => {
+/**
+ * Injects an import and router.use() line into src/core/routes.js.
+ *
+ * @param {string} name - The PascalCase resource name (e.g. "Product", "Auth")
+ * @param {string|null} explicitFolderName - Optional: override the auto-pluralized folder name.
+ *   Use this for modules that don't follow the standard plural convention (e.g. "auth" not "auths").
+ */
+export const injectRoute = async (name, explicitFolderName = null) => {
   try {
     const routesPath = path.join(process.cwd(), 'src', 'core', 'routes.js');
-    const folderName = `${name.toLowerCase()}s`; // e.g., 'products'
-    const routeFileName = `${name.toLowerCase()}.route.js`; // e.g., 'product.route.js'
-    const routeVariableName = `${name.toLowerCase()}Routes`; // e.g., 'productRoutes'
 
-    // 1. Read the central routes.js file
+    // Use the explicit folder name if provided, otherwise default to pluralized
+    const folderName = explicitFolderName ?? `${name.toLowerCase()}s`;
+    const routeFileName = `${name.toLowerCase()}.route.js`;
+    const routeVariableName = `${name.toLowerCase()}Routes`;
+
     let routesContent;
     try {
       routesContent = await fs.readFile(routesPath, 'utf-8');
@@ -21,29 +29,28 @@ export const injectRoute = async (name) => {
     const importStatement = `import ${routeVariableName} from '../modules/${folderName}/${routeFileName}';`;
     const registerStatement = `router.use('/${folderName}', ${routeVariableName});`;
 
-    // 2. Prevent duplicate injections if they run the command twice
+    // Prevent duplicate injections
     if (routesContent.includes(importStatement) || routesContent.includes(registerStatement)) {
-      return true; 
+      return true;
     }
 
-    // 3. Inject the Import Statement
+    // Inject the import
     const importAnchor = '// 1. Import module routes here';
     routesContent = routesContent.replace(
       importAnchor,
       `${importAnchor}\n${importStatement}`
     );
 
-    // 4. Inject the Register Statement
+    // Inject the route registration
     const registerAnchor = '// 2. Register module routes here';
     routesContent = routesContent.replace(
       registerAnchor,
       `${registerAnchor}\n${registerStatement}`
     );
 
-    // 5. Save the updated file
     await fs.writeFile(routesPath, routesContent);
     console.log(chalk.green(`✔ Auto-injected route into: ${chalk.bold('src/core/routes.js')}`));
-    
+
     return true;
   } catch (error) {
     console.error(chalk.red(`\n✖ Failed to inject route:`), error.message);

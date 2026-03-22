@@ -15,8 +15,24 @@
     <%_ if (orm === 'prisma') { _%>,
     "@prisma/client": "^5.10.2"
     <%_ } _%>
+    <%_ if (orm === 'sequelize') { _%>,
+    "sequelize": "^6.37.0"
+    <%_ if (database === 'postgres') { _%>,
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4"
+    <%_ } else if (database === 'mysql') { _%>,
+    "mysql2": "^3.9.0"
+    <%_ } _%>
+    <%_ } _%>
     <%_ if (database === 'mongodb' && orm === 'mongoose') { _%>,
     "mongoose": "^8.2.0"
+    <%_ } _%>
+    <%_ if (database === 'postgres' && orm === 'none') { _%>,
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4"
+    <%_ } _%>
+    <%_ if (database === 'mysql' && orm === 'none') { _%>,
+    "mysql2": "^3.9.0"
     <%_ } _%>
     <%_ if (extraPackages && extraPackages.includes('helmet')) { _%>,
     "helmet": "^7.1.0"

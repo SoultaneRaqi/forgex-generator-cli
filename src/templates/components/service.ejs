@@ -9,7 +9,6 @@ export const customServiceLogic = async () => {
 
 <%_ } else { _%>
 export const findAll = async (query = {}) => {
-  // Basic Pagination Scaffolding
   const page = parseInt(query.page, 10) || 1;
   const limit = parseInt(query.limit, 10) || 10;
   const startIndex = (page - 1) * limit;
@@ -43,43 +42,86 @@ export const remove = async (id) => {
 };
 <%_ } _%>
 
+<%_ } else if (config.orm === 'sequelize') { _%>
+import <%- name %> from './<%- name.toLowerCase() %>.model.js';
+
+<%_ if (options.empty) { _%>
+export const customServiceLogic = async () => {
+  // Add your custom Sequelize logic here
+  return true;
+};
+
+<%_ } else { _%>
+export const findAll = async (query = {}) => {
+  const page = parseInt(query.page, 10) || 1;
+  const limit = parseInt(query.limit, 10) || 10;
+  const offset = (page - 1) * limit;
+
+  const { count, rows } = await <%- name %>.findAndCountAll({
+    limit,
+    offset,
+    order: [['createdAt', 'DESC']],
+  });
+
+  return {
+    pagination: { page, limit, total: count, pages: Math.ceil(count / limit) },
+    data: rows,
+  };
+};
+
+export const findById = async (id) => {
+  return await <%- name %>.findByPk(id);
+};
+
+export const create = async (payload) => {
+  return await <%- name %>.create(payload);
+};
+
+export const update = async (id, payload) => {
+  const record = await <%- name %>.findByPk(id);
+  if (!record) return null;
+  return await record.update(payload);
+};
+
+export const remove = async (id) => {
+  const record = await <%- name %>.findByPk(id);
+  if (!record) return false;
+  await record.destroy();
+  return true;
+};
+<%_ } _%>
+
 <%_ } else { _%>
 // Import your database model/client here
 // Example: import db from '../../core/config/db.js';
 
 <%_ if (options.empty) { _%>
 export const customServiceLogic = async () => {
-  // Add your custom logic here
   return true;
 };
 
 <%_ } else { _%>
 export const findAll = async (query = {}) => {
-  // Add your pagination and filtering logic here
   return {
-    pagination: { page: 1, limit: 10, total: 1 },
-    data: ['List of <%- name.toLowerCase() %>s']
+    pagination: { page: 1, limit: 10, total: 0 },
+    data: []
   };
 };
 
 export const findById = async (id) => {
-  // return await db.query(...)
-  return `Details for <%- name.toLowerCase() %> ${id}`;
+  return null;
 };
 
 export const create = async (payload) => {
-  // return await db.query(...)
-  return `Created new <%- name.toLowerCase() %>`;
+  return payload;
 };
 
 export const update = async (id, payload) => {
-  // return await db.query(...)
-  return `Updated <%- name.toLowerCase() %> ${id}`;
+  return payload;
 };
 
 export const remove = async (id) => {
-  // return await db.query(...)
-  return true; 
+  return true;
 };
 <%_ } _%>
 <%_ } _%>

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const <%- name.toLowerCase() %>Schema = new mongoose.Schema(
   {
     <%_ if (options.empty) { _%>
-    // Define your custom schema fields here...
+    // Define your schema fields here...
     <%_ } else { _%>
     name: {
       type: String,
@@ -28,19 +28,49 @@ const <%- name.toLowerCase() %>Schema = new mongoose.Schema(
   }
 );
 
-// Example: Add a pre-save hook for hashing passwords or slugifying names
-// <%- name.toLowerCase() %>Schema.pre('save', async function (next) {
-//   // console.log('<%- name %> is about to be saved');
-//   next();
-// });
-
 export default mongoose.model('<%- name %>', <%- name.toLowerCase() %>Schema);
+
+<%_ } else if (config.orm === 'sequelize') { _%>
+import { DataTypes } from 'sequelize';
+import sequelize from '../../core/config/db.js';
+
+const <%- name %> = sequelize.define('<%- name %>', {
+  <%_ if (options.empty) { _%>
+  // Define your Sequelize columns here...
+  // Example:
+  // title: { type: DataTypes.STRING, allowNull: false },
+  <%_ } else { _%>
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
+  // Add your other columns here...
+  <%_ } _%>
+}, {
+  timestamps: true,
+  // tableName: '<%- name.toLowerCase() %>s',
+});
+
+export default <%- name %>;
 
 <%_ } else if (config.orm === 'prisma') { _%>
 /**
  * ForgeX Notice:
- * You selected Prisma ORM.
- * Please define your <%- name %> model in the root `prisma/schema.prisma` file.
+ * You selected Prisma ORM. Define your <%- name %> model in `prisma/schema.prisma`:
+ *
+ * model <%- name %> {
+ *   id        String   @id @default(uuid())
+ *   name      String
+ *   isActive  Boolean  @default(true)
+ *   createdAt DateTime @default(now())
+ *   updatedAt DateTime @updatedAt
+ * }
+ *
+ * Then run: npx prisma migrate dev
  */
 <%_ } else { _%>
 /**

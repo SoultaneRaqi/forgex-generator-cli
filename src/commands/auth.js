@@ -14,9 +14,9 @@ const compileAndWrite = async (templateName, targetPath, config) => {
     const templatePath = path.join(__dirname, '../templates/auth', templateName);
     const templateContent = await fs.readFile(templatePath, 'utf-8');
     const compiledCode = ejs.render(templateContent, { config });
-    
+
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
-    
+
     // Skip if file exists to prevent overwriting custom logic
     try {
       await fs.access(targetPath);
@@ -49,8 +49,8 @@ export const authCommand = async () => {
     // 3. Generate Middleware
     await compileAndWrite('auth.middleware.ejs', path.join(cwd, 'src/core/middlewares/auth.middleware.js'), config);
 
-    // 4. Inject the Auth Route
-    await injectRoute('Auth');
+    // 4. Inject the Auth Route — pass 'auth' explicitly so it doesn't become 'auths'
+    await injectRoute('auth', 'auth');
 
     console.log(chalk.magenta.bold(`\n🛡️ Auth system forged successfully!`));
     console.log(chalk.gray(`Make sure JWT_SECRET and JWT_EXPIRE are set in your .env file.\n`));

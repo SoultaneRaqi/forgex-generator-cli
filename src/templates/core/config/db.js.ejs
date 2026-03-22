@@ -14,8 +14,6 @@ export const connectDB = async () => {
 <%_ } else if (orm === 'prisma') { _%>
 import { PrismaClient } from '@prisma/client';
 
-// PrismaClient is attached to the `global` object in development to prevent 
-// exhausting your database connection limit.
 const globalForPrisma = global;
 
 export const prisma = globalForPrisma.prisma || new PrismaClient({
@@ -35,6 +33,33 @@ export const connectDB = async () => {
 };
 
 export default prisma;
+<%_ } else if (orm === 'sequelize') { _%>
+import { Sequelize } from 'sequelize';
+
+export const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  dialectOptions: {
+    // Uncomment if using SSL (e.g. production PostgreSQL on cloud providers)
+    // ssl: { require: true, rejectUnauthorized: false }
+  },
+});
+
+export const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Sequelize Connected Successfully');
+
+    if (process.env.NODE_ENV === 'development') {
+      await sequelize.sync({ alter: true });
+      console.log('Models synced with database.');
+    }
+  } catch (error) {
+    console.error('Database connection failed:', error.message);
+    process.exit(1);
+  }
+};
+
+export default sequelize;
 <%_ } else if (database === 'postgres' && orm === 'none') { _%>
 import pkg from 'pg';
 const { Pool } = pkg;
@@ -67,8 +92,7 @@ export const connectDB = async () => {
   }
 };
 <%_ } else { _%>
-// No database selected. 
-// You can add your custom connection logic here if needed.
+// No database selected.
 export const connectDB = async () => {
   console.log('Running without a database connection.');
 };
