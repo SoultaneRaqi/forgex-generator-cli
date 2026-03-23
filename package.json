@@ -1,7 +1,7 @@
 {
   "name": "forgex-cli",
   "version": "1.0.0",
-  "description": "The ultimate Node.js and Express scaffolder",
+  "description": "Scaffold production-ready Node.js/Express backends in seconds",
   "main": "index.js",
   "type": "module",
   "bin": {
@@ -16,13 +16,30 @@
     "scaffold",
     "nodejs",
     "generator",
-    "architecture"
+    "architecture",
+    "backend",
+    "boilerplate",
+    "expressjs",
+    "prisma",
+    "mongoose",
+    "sequelize",
+    "jwt",
+    "rest-api",
+    "crud",
+    "typescript"
   ],
   "author": "Soultane Raqi",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/SoultaneRaqi/ForgeX-CLI.git"
+  },
+  "homepage": "https://github.com/SoultaneRaqi/ForgeX-CLI#readme",
+  "bugs": {
+    "url": "https://github.com/SoultaneRaqi/ForgeX-CLI/issues"
+  },
+  "engines": {
+    "node": ">=16"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.3.0",
