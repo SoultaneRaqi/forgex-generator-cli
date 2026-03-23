@@ -1,14 +1,12 @@
 <%_ if (orm === 'mongoose') { _%>
 import mongoose from 'mongoose';
-import chalk from 'chalk';
 
 export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.DATABASE_URL);
-    console.log(chalk.cyan.underline(`MongoDB Connected: ${conn.connection.host}`));
+    console.log(`📦 MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(chalk.red.bold(`Error: ${error.message}`));
-    process.exit(1);
+    console.error('❌ MongoDB connection failed. Did you update the DATABASE_URL in your .env file?');
   }
 };
 <%_ } else if (orm === 'prisma') { _%>
@@ -25,10 +23,9 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 export const connectDB = async () => {
   try {
     await prisma.$connect();
-    console.log('Prisma Database Connected Successfully');
+    console.log('📦 Prisma Database Connected Successfully');
   } catch (error) {
-    console.error('Database connection failed:', error);
-    process.exit(1);
+    console.error('❌ Prisma connection failed. Did you update the DATABASE_URL in your .env file?');
   }
 };
 
@@ -47,15 +44,14 @@ export const sequelize = new Sequelize(process.env.DATABASE_URL, {
 export const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log('Sequelize Connected Successfully');
+    console.log('📦 Sequelize Connected Successfully');
 
     if (process.env.NODE_ENV === 'development') {
       await sequelize.sync({ alter: true });
       console.log('Models synced with database.');
     }
   } catch (error) {
-    console.error('Database connection failed:', error.message);
-    process.exit(1);
+    console.error('❌ Sequelize connection failed. Did you update the DATABASE_URL in your .env file?');
   }
 };
 
@@ -71,11 +67,10 @@ export const pool = new Pool({
 export const connectDB = async () => {
   try {
     const client = await pool.connect();
-    console.log('PostgreSQL Native Driver Connected');
+    console.log('📦 PostgreSQL Native Driver Connected');
     client.release();
   } catch (error) {
-    console.error('Database connection failed:', error.message);
-    process.exit(1);
+    console.error('❌ PostgreSQL connection failed. Did you update the DATABASE_URL in your .env file?');
   }
 };
 <%_ } else if (database === 'mysql' && orm === 'none') { _%>
@@ -84,11 +79,10 @@ import mysql from 'mysql2/promise';
 export const connectDB = async () => {
   try {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
-    console.log('MySQL Native Driver Connected');
+    console.log('📦 MySQL Native Driver Connected');
     return connection;
   } catch (error) {
-    console.error('Database connection failed:', error.message);
-    process.exit(1);
+    console.error('❌ MySQL connection failed. Did you update the DATABASE_URL in your .env file?');
   }
 };
 <%_ } else { _%>

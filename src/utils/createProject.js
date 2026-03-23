@@ -133,14 +133,14 @@ export async function createProjectStructure(config) {
       
       const dbProvider = config.database === 'postgres' ? 'postgresql' : config.database;
       const prismaSchema = `generator client {
-            provider = "prisma-client-js"
-          }
+  provider = "prisma-client-js"
+}
 
-          datasource db {
-            provider = "${dbProvider}"
-            url      = env("DATABASE_URL")
-          }
-          `;
+datasource db {
+  provider = "${dbProvider}"
+  url      = env("DATABASE_URL")
+}
+`;
       await fs.writeFile(path.join(projectPath, 'prisma', 'schema.prisma'), prismaSchema);
     }
 
@@ -149,6 +149,13 @@ export async function createProjectStructure(config) {
     try {
       await execAsync(`${packageManager} install`, { cwd: projectPath });
       spinner.succeed(chalk.green('Dependencies installed successfully!'));
+      
+      // 4.5 Generate Prisma Client so the server doesn't crash on boot!
+      if (config.orm === 'prisma') {
+        spinner.text = chalk.cyan('Generating Prisma Client...');
+        await execAsync('npx prisma generate', { cwd: projectPath });
+        spinner.succeed(chalk.green('Prisma Client generated successfully!'));
+      }
     } catch (installError) {
       spinner.warn(chalk.yellow(`Files created, but auto-install failed. Run '${packageManager} install' manually.`));
     }
