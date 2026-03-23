@@ -8,6 +8,7 @@ import { listCommand } from '../src/commands/list.js';
 import { authCommand } from '../src/commands/auth.js';
 import { validatorCommand } from '../src/commands/validator.js';
 import { middlewareCommand } from '../src/commands/middleware.js';
+import { migrateCommand } from '../src/commands/migrate.js';
 
 const program = new Command();
 
@@ -33,6 +34,8 @@ ${chalk.cyan.bold('Examples:')}
   $ forgex gen:middleware RateLimit              ${chalk.gray('# Generate a custom middleware')}
   $ forgex gen:controller User --empty           ${chalk.gray('# Generate an empty controller file')}
   $ forgex ls                                    ${chalk.gray('# List all active resources in your project')}
+  $ forgex migrate                               ${chalk.gray('# Run database migrations')}
+  $ forgex migrate --name add-users-table        ${chalk.gray('# Prisma: run a named migration')}
 
 ${chalk.cyan.bold('Generation flags:')}
   -e, --empty     ${chalk.gray('Generate an empty file without boilerplate')}
@@ -100,6 +103,15 @@ generateTypes.forEach((type) => {
       generateCommand(type, name, options);
     });
 });
+
+program
+  .command('migrate')
+  .description('Run database migrations based on your project ORM')
+  .option('-n, --name <name>', 'Migration name (Prisma only)', 'migration')
+  .action((options) => migrateCommand(options));
+
+
+
 
 program.parse(process.argv);
 
