@@ -126,6 +126,24 @@ export async function createProjectStructure(config) {
       await fs.writeFile(path.join(projectPath, '.prettierrc'), prettierContent);
     }
 
+    // Initialize Prisma Schema if needed
+    if (config.orm === 'prisma') {
+      spinner.text = chalk.cyan('Initializing Prisma schema...');
+      await fs.mkdir(path.join(projectPath, 'prisma'), { recursive: true });
+      
+      const dbProvider = config.database === 'postgres' ? 'postgresql' : config.database;
+      const prismaSchema = `generator client {
+            provider = "prisma-client-js"
+          }
+
+          datasource db {
+            provider = "${dbProvider}"
+            url      = env("DATABASE_URL")
+          }
+          `;
+      await fs.writeFile(path.join(projectPath, 'prisma', 'schema.prisma'), prismaSchema);
+    }
+
     // 4. Install dependencies
     spinner.text = chalk.cyan(`Installing dependencies using ${packageManager}...`);
     try {
