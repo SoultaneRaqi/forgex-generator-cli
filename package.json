@@ -1,6 +1,6 @@
 {
   "name": "forgex-generator", 
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Scaffold production-ready Node.js/Express backends in seconds",
   "main": "index.js",
   "type": "module",
