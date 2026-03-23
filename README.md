@@ -9,7 +9,7 @@
 
 <div align="center">
 
-**Scaffold production-ready Node.js backends in seconds.**
+**Scaffold production-ready Node.js/Express backends in seconds.**
 
 [![npm version](https://img.shields.io/npm/v/forgex-cli?color=orange&style=flat-square)](https://www.npmjs.com/package/forgex-cli)
 [![npm downloads](https://img.shields.io/npm/dm/forgex-cli?color=orange&style=flat-square)](https://www.npmjs.com/package/forgex-cli)
@@ -24,25 +24,32 @@
 
 ## What is ForgeX?
 
-**ForgeX CLI** is an interactive command-line tool that scaffolds fully structured, production-ready Node.js/Express backends in seconds. Answer a few prompts — pick your database, ORM, extra packages, and package manager — and ForgeX generates a complete, organized project so you can skip the boilerplate and start building immediately.
+**ForgeX CLI** is an interactive command-line tool that scaffolds fully structured, production-ready Node.js/Express backends in seconds.
 
-No more copy-pasting starter code. No more manual folder setup. Just `npx forgex-cli` and forge.
+Answer a few prompts — pick your database, ORM, validation library, and package manager — and ForgeX generates a complete, organized project with everything wired up. No more copy-pasting starter code. No more manual folder setup.
+
+```bash
+npx forgex-cli init
+```
 
 ---
 
 ## ✨ Features
 
-- 🏗️ **Modular architecture** — Feature-based folder structure that scales cleanly as your project grows
-- 🗄️ **Multi-database support** — PostgreSQL, MySQL, MongoDB, or no database
-- 🔌 **ORM / ODM choices** — Prisma, Mongoose, or native drivers
+- 🏗️ **Modular architecture** — Feature-based folder structure that scales cleanly
+- 🗄️ **Multi-database support** — PostgreSQL, MySQL, MongoDB, or none
+- 🔌 **ORM / ODM choices** — Prisma, Sequelize, Mongoose, or native drivers
 - 📦 **Package manager aware** — Works with `npm`, `yarn`, and `pnpm`
-- 🔐 **JWT Auth generation** — Full authentication system (register, login, protected routes) in one command
-- ⚡ **Smart generators** — Scaffold individual controllers, services, routes, models, or full CRUD resources
+- 🔐 **JWT Auth generation** — Full authentication system in one command
+- ⚡ **Smart generators** — Scaffold controllers, services, routes, models, validators, and middleware individually
 - 🔁 **Auto route injection** — Generated routes are automatically wired into the central router
-- 🛠️ **Extra packages** — Optionally include Helmet, Morgan, Zod, Bcrypt, JWT, or Axios at init time
-- 📄 **Pre-configured files** — `.env.example`, `nodemon` config, and a ready-to-use `README.md`
-- 🔒 **Environment-safe** — Secrets stay out of your repo thanks to `.gitignore` and `.env.example`
-- 🌿 **Git ready** — Repository initialized with an initial commit automatically
+- 🛡️ **Input validation** — Generate Zod or Joi validators with middleware factory included
+- 🔧 **Custom middleware** — Generate middleware files directly into `src/core/middlewares/`
+- ✅ **Env validation** — Startup check that crashes early with a clear message if vars are missing
+- 🛠️ **ESLint + Prettier** — Optional, pre-configured for ESM out of the box
+- 🌿 **Git ready** — Repository initialized with first commit automatically
+- 🗃️ **Migration runner** — `forgex migrate` runs the right command based on your ORM
+- 📋 **Resource listing** — See all your modules, their files, and endpoints in one table
 
 ---
 
@@ -56,14 +63,14 @@ No more copy-pasting starter code. No more manual folder setup. Just `npx forgex
 ### Run without installing
 
 ```bash
-npx forgex-cli
+npx forgex-cli init
 ```
 
 ### Or install globally
 
 ```bash
 npm install -g forgex-cli
-forgex
+forgex init
 ```
 
 ---
@@ -77,8 +84,9 @@ Interactively scaffold a new project. You'll be prompted to choose:
 - Project name
 - Package manager (`npm` / `yarn` / `pnpm`)
 - Database (`PostgreSQL` / `MySQL` / `MongoDB` / `None`)
-- ORM / ODM (`Prisma` / `Mongoose` / `None`)
-- Extra packages (`Helmet`, `Morgan`, `Zod`, `Bcrypt`, `JsonWebToken`, `Axios`)
+- ORM / ODM (`Prisma` / `Sequelize` / `Mongoose` / `None`)
+- Extra packages (`Helmet`, `Morgan`, `Zod`, `Joi`, `Bcrypt`, `JsonWebToken`, `Axios`)
+- ESLint + Prettier (`yes` / `no`)
 - Whether to start the dev server immediately
 
 ```bash
@@ -86,46 +94,39 @@ forgex init
 ```
 
 ```
-? What is the name of your project?               my-api
-? Which package manager do you prefer?            npm
-? Which database will you use?                    PostgreSQL
-? Which ORM/ODM do you want to use?               Prisma
-? Select additional packages to install:          Helmet, Morgan
-? Start the development server after setup?       Yes
-
-  ✔ Project scaffolded
-  ✔ Dependencies installed
-  ✔ Git repository initialized
-  ✔ You're ready to forge!
+✔ Project scaffolded
+✔ Dependencies installed
+✔ Git repository initialized
+✔ You're ready to forge!
 ```
 
 ---
 
-### `forgex gen:resource <Name>`
+### `forgex gen:resource <n>`
 
-Generate a complete CRUD module (controller + service + route + model) and auto-inject the route.
+Generate a complete CRUD module — controller, service, route, and model — with the route auto-injected into `src/core/routes.js`.
 
 ```bash
 forgex gen:resource Product
 ```
 
-Use flags to skip specific files:
+Skip specific files with flags:
 
 ```bash
-forgex gen:resource Notification --no-model     # Skip the model
-forgex gen:resource Report --no-service         # Skip the service
-forgex gen:resource Log --no-controller         # Skip the controller
-forgex gen:resource Webhook --no-route          # Skip the route
+forgex gen:resource Notification --no-model
+forgex gen:resource Report --no-service
+forgex gen:resource Log --no-controller
+forgex gen:resource Webhook --no-route
 ```
 
 ---
 
-### `forgex gen:controller <Name>`
-### `forgex gen:service <Name>`
-### `forgex gen:route <Name>`
-### `forgex gen:model <Name>`
+### `forgex gen:controller <n>`
+### `forgex gen:service <n>`
+### `forgex gen:route <n>`
+### `forgex gen:model <n>`
 
-Generate a single file of the specified type. Routes are auto-injected into `src/core/routes.js`.
+Generate a single file. Routes are auto-injected into `src/core/routes.js`.
 
 ```bash
 forgex gen:controller User
@@ -134,24 +135,23 @@ forgex gen:route Product
 forgex gen:model Category
 ```
 
-**Generation flags** (work on all `gen:*` commands):
+**Flags available on all `gen:*` commands:**
 
 | Flag | Description |
 |---|---|
-| `-c, --crud` | Generate with full CRUD boilerplate (default) |
 | `-e, --empty` | Generate an empty file with minimal boilerplate |
 | `-f, --force` | Overwrite an existing file |
 
 ```bash
-forgex gen:controller Payment --empty    # Minimal boilerplate
-forgex gen:service User --force          # Overwrite existing file
+forgex gen:controller Payment --empty
+forgex gen:service User --force
 ```
 
 ---
 
 ### `forgex gen:auth`
 
-Generate a complete JWT authentication system in one command. Creates:
+Generate a complete JWT authentication system in one command:
 
 - `src/modules/auth/auth.controller.js`
 - `src/modules/auth/auth.service.js`
@@ -169,22 +169,68 @@ forgex gen:auth
 
 ---
 
+### `forgex gen:validator <n>`
+
+Generate a Zod or Joi validator for a resource. The library is auto-detected from your `forgex.fx` config (whatever you chose at init).
+
+```bash
+forgex gen:validator Product
+```
+
+Generates `src/modules/products/product.validator.js` with:
+- `create<n>Schema` and `update<n>Schema`
+- A `validate()` middleware factory
+- `validateCreate<n>` and `validateUpdate<n>` ready to drop into your routes
+
+After generating, ForgeX prints the exact import and usage instructions for your route file.
+
+---
+
+### `forgex gen:middleware <n>`
+
+Generate a custom middleware file in `src/core/middlewares/`.
+
+```bash
+forgex gen:middleware RateLimit
+forgex gen:middleware Tenant --empty    # Simple sync middleware without catchAsync
+```
+
+---
+
+### `forgex migrate`
+
+Run database migrations based on your project's ORM — no need to remember the command.
+
+```bash
+forgex migrate                              # Auto-detects ORM and runs migration
+forgex migrate --name add-users-table       # Prisma: named migration
+```
+
+| ORM | Command it runs |
+|---|---|
+| Prisma | `npx prisma migrate dev --name <n>` |
+| Sequelize | `npx sequelize-cli db:migrate` |
+| Mongoose | Tells you no migrations needed |
+| Native / None | Tells you to run SQL manually |
+
+---
+
 ### `forgex list` (alias: `forgex ls`)
 
-List all active resources in your project with a summary of which files exist per module.
+List all active resources with a summary of which files exist per module.
 
 ```bash
 forgex ls
 ```
 
 ```
-┌──────────┬────────────┬───────┬─────────┬───────┬─────────────────────┐
-│ Resource │ Controller │ Route │ Service │ Model │ Endpoint            │
-├──────────┼────────────┼───────┼─────────┼───────┼─────────────────────┤
-│ Product  │     ✔      │   ✔   │    ✔    │   ✔   │ /api/v1/products    │
-│ Auth     │     ✔      │   ✔   │    ✔    │   ✖   │ /api/v1/auths       │
-│ User     │     ✖      │   ✖   │    ✖    │   ✔   │ Internal (No Route) │
-└──────────┴────────────┴───────┴─────────┴───────┴─────────────────────┘
+┌──────────┬────────────┬───────┬─────────┬───────┬──────────────────────┐
+│ Resource │ Controller │ Route │ Service │ Model │ Endpoint             │
+├──────────┼────────────┼───────┼─────────┼───────┼──────────────────────┤
+│ Products │     ✔      │   ✔   │    ✔    │   ✔   │ /api/v1/products     │
+│ Auth     │     ✔      │   ✔   │    ✔    │   ✖   │ /api/v1/auth         │
+│ Users    │     ✖      │   ✖   │    ✖    │   ✔   │ Internal (No Route)  │
+└──────────┴────────────┴───────┴─────────┴───────┴──────────────────────┘
 ```
 
 ---
@@ -196,30 +242,32 @@ my-api/
 ├── src/
 │   ├── core/
 │   │   ├── config/
-│   │   │   └── db.js               # Database connection logic
+│   │   │   ├── db.js               # Database connection logic
+│   │   │   └── env.js              # Startup env variable validation
 │   │   ├── middlewares/
 │   │   │   ├── errorHandler.js     # Global error handler
 │   │   │   └── notFound.js         # 404 handler
 │   │   ├── utils/
 │   │   │   └── catchAsync.js       # Async wrapper utility
-│   │   └── routes.js               # Central router hub
+│   │   └── routes.js               # Central router hub (auto-injected)
 │   ├── modules/
 │   │   └── <feature>/
-│   │       ├── <feature>.routes.js
 │   │       ├── <feature>.controller.js
 │   │       ├── <feature>.service.js
-│   │       └── <feature>.model.js
+│   │       ├── <feature>.route.js
+│   │       ├── <feature>.model.js
+│   │       └── <feature>.validator.js   # if generated
 │   ├── app.js
 │   └── server.js
-├── .env                            # Your local environment variables
-├── .env.example                    # Environment variable template (safe to commit)
+├── .env
+├── .env.example
 ├── .gitignore
+├── eslint.config.js                # if linting was selected
+├── .prettierrc                     # if linting was selected
 ├── forgex.fx                       # ForgeX project config (do not delete)
 ├── package.json
 └── README.md
 ```
-
-> All feature logic lives in `src/modules/` — one folder per domain. Global concerns (config, middleware, utilities) live in `src/core/`. Clean, obvious, and easy to extend.
 
 ---
 
@@ -229,9 +277,10 @@ my-api/
 |---|---|
 | **Framework** | Express.js |
 | **Database** | PostgreSQL, MySQL, MongoDB, None |
-| **ORM / ODM** | Prisma, Mongoose, Native Drivers |
+| **ORM / ODM** | Prisma, Sequelize, Mongoose, Native Drivers |
+| **Validation** | Zod, Joi |
 | **Package Manager** | npm, yarn, pnpm |
-| **Optional Packages** | Helmet, Morgan, Zod, Bcrypt, JsonWebToken, Axios |
+| **Optional Packages** | Helmet, Morgan, Bcrypt, JsonWebToken, Axios |
 
 ---
 
@@ -241,6 +290,9 @@ my-api/
 |---|---|
 | `dev` | Start with hot-reload via nodemon |
 | `start` | Start in production mode |
+| `lint` | Run ESLint across `src/` |
+| `lint:fix` | Auto-fix ESLint issues |
+| `format` | Run Prettier across `src/` |
 
 ---
 
@@ -250,7 +302,7 @@ my-api/
 # 1. Scaffold a new project
 npx forgex-cli init
 
-# 2. Enter the project
+# 2. Move into the project
 cd my-api
 
 # 3. Add your database credentials
@@ -259,13 +311,22 @@ cp .env.example .env
 # 4. Generate a resource
 forgex gen:resource Product
 
-# 5. Add authentication
+# 5. Add a validator for it
+forgex gen:validator Product
+
+# 6. Add authentication
 forgex gen:auth
 
-# 6. See what you've built
+# 7. Generate a custom middleware
+forgex gen:middleware RateLimit
+
+# 8. Run migrations (Prisma or Sequelize)
+forgex migrate
+
+# 9. See everything you've built
 forgex ls
 
-# 7. Start the server
+# 10. Start the server
 npm run dev
 ```
 
@@ -282,6 +343,15 @@ Contributions are welcome and appreciated!
 5. Open a Pull Request
 
 Please follow [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
+
+---
+
+## 🐛 Found a Bug?
+
+Open an issue on [GitHub](https://github.com/SoultaneRaqi/ForgeX-CLI/issues) with:
+- The command you ran
+- Your `forgex.fx` config
+- The error message
 
 ---
 
