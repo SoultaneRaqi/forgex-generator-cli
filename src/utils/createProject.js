@@ -140,6 +140,16 @@ datasource db {
   provider = "${dbProvider}"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 `;
       await fs.writeFile(path.join(projectPath, 'prisma', 'schema.prisma'), prismaSchema);
     }
