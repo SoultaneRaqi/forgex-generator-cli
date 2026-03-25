@@ -23,7 +23,7 @@
 ---
 
 ## What is ForgeX?
-
+[Documentation](https://forge-x-generator.vercel.app/)
 **ForgeX CLI** is an interactive command-line tool that scaffolds fully structured, production-ready Node.js/Express backends in seconds.
 
 Answer a few prompts — pick your database, ORM, validation library, and package manager — and ForgeX generates a complete, organized project with everything wired up. No more copy-pasting starter code. No more manual folder setup.
@@ -363,7 +363,7 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for full details
 
 <div align="center">
 
-*Forged with 🪓 by [Soultane Raqi](https://github.com/SoultaneRaqi)*
+*Forged with 🪓 by [Soultane Raqi](https://github.com/SoultaneRaqi)* [Soultane's Portfolio](https://soultane.vercel.app/)
 
 If ForgeX saved you time, consider giving it a ⭐ on [GitHub](https://github.com/SoultaneRaqi/ForgeX-CLI)!
 
